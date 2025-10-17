@@ -1,0 +1,1 @@
+{"root":["./src/index.ts","./src/config/db.config.ts","./src/controllers/auth.controller.ts","./src/controllers/project.controller.ts","./src/database/migrations/1760501339435-lovable.ts","./src/entities/conversation.entity.ts","./src/entities/project.entity.ts","./src/entities/user.entity.ts"],"version":"5.9.3"}
