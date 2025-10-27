@@ -5,6 +5,16 @@ import AuthController from "./controllers/auth.controller"
 import ProjectController from "./controllers/project.controller"
 import { DbInitialization } from "./config/db.config";
 import 'reflect-metadata';
+import { createOpenRouter } from '@openrouter/ai-sdk-provider';
+import { streamText } from 'ai';
+import { SYSTEM_PROMPT } from "./prompts";
+import { createFile, updateFile, deleteFile, readFile } from "./tools";
+// import { Sandbox } from '@e2b/code-interpreter'
+import { z } from "zod";
+
+import { Sandbox } from 'e2b'
+
+// Create sandbox
 
 const app = express();
 const port = process.env.BACKEND_PORT;
@@ -15,7 +25,42 @@ app.use(cors({ origin: "*" }));
 DbInitialization();
 
 app.use("/v0/api/auth", AuthController);
-app.use("/v0/api", ProjectController)
+app.use("/v0/api", ProjectController);
+
+app.get("/prompt", async (req, res) => {
+    // const { prompt } = req.body;
+    const sandbox = await Sandbox.create('ce50a2e02xkmkz0igbf3')
+
+    const host = sandbox.getHost(5173)
+
+    // TODO:  create sandbox for user
+    const prompt = "create a landing page for school it should mention all necessary details"
+    const openrouter = createOpenRouter({
+        apiKey: process.env.OPENROUTER_API_KEY!,
+    });
+    const response = streamText({
+        model: openrouter("gpt-4o-mini"),
+        tools: {
+            createFile: createFile(sandbox),
+            updateFile: updateFile(sandbox),
+            deleteFile: deleteFile(sandbox),
+            readFile: readFile(sandbox)
+        },
+        messages: [
+            {
+                role: "system",
+                content: SYSTEM_PROMPT
+            },
+            {
+                role: "user",
+                content: prompt
+            }
+        ]
+    });
+    
+    console.log(`https://${host}`);
+    response.pipeTextStreamToResponse(res);
+});
 
 app.listen(port, () => {
     console.log(`Backend running on port running on ${port}`);

@@ -5,7 +5,7 @@ const AuthMiddleware = (req: Request, res: Response, next: NextFunction) => {
     const authHeader = req.headers["authorization"];
     const token = authHeader && authHeader.split(" ")[1];
     if(!token){
-        res.status(401).json({
+        res.status(411).json({
             success: false,
             data: null,
             message: "token doesn't exist"
@@ -23,7 +23,8 @@ const AuthMiddleware = (req: Request, res: Response, next: NextFunction) => {
         });
         return;
     }
-
+    console.log(verify);
+    
     next()
 }
 

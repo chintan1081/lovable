@@ -11,7 +11,7 @@ router.post('/signin', async (req, res) => {
     const { data, success } = signInSchema.safeParse(req.body);
 
     if (!success && !data) {
-        res.status(400).json({
+        res.status(411).json({
             success: false,
             data: null,
             message: "Incorrect input parameters"
@@ -71,7 +71,12 @@ router.post('/signup', async (req, res) => {
     const userExist = await userRepositry.findOne({ where: { email: data.email } });
 
     if (userExist) {
-        throw new Error("Email already exist");
+         res.status(400).json({
+            success: false,
+            data: null,
+            message: "Email already exist"
+        });
+        return;
     }
 
     const hashPassword = await bcrypt.hash(data.password, 0);

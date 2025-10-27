@@ -1,12 +1,26 @@
 import './App.css'
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { ThemeProvider } from './theme/provider';
+import { ToastContainer } from 'react-toastify';
+import ProtectedRoutes from './components/ProtectedRoutes';
+import Chat from './components/Chat';
+import Signin from './components/Signin';
+import Signup from './components/Signup';
 
 function App() {
   return (
-    <>
-      <h1 className="text-3xl font-bold underline">
-        Hello world!
-      </h1>
-    </>
+    <BrowserRouter>
+    <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme" >
+      <ToastContainer />
+      <Routes>
+        <Route path="/signin" element={<Signin />} />
+        <Route path="/signup" element={<Signup />} />
+        <Route element={<ProtectedRoutes />}>
+          <Route path="/" element={<Chat />} />
+        </Route>
+      </Routes>
+      </ThemeProvider>
+    </BrowserRouter>
   )
 }
 
