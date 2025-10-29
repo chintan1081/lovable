@@ -68,6 +68,7 @@ router.post('/signup', async (req, res) => {
         });
         return
     }
+
     const userExist = await userRepositry.findOne({ where: { email: data.email } });
 
     if (userExist) {
@@ -84,6 +85,7 @@ router.post('/signup', async (req, res) => {
         email: data.email,
         password: hashPassword
     });
+    
     await userRepositry.save(user);
     res.status(200).json({
         success: true,

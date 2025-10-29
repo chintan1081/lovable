@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { tool } from "ai";
-import Sandbox from "e2b";
+import { Sandbox } from "@e2b/code-interpreter";
 
 export const createFile = (sandbox: Sandbox) => tool({
   description: 'Create a file at a certain directory',

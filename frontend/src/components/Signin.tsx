@@ -24,7 +24,7 @@ export default function Signin() {
             if(response.data.success){
                 toast.success(response.data.message);
                 Cookies.set("token", response.data.data.token);
-                navigate("/chat")
+                navigate("/")
             }
         }catch (error) {
             if (axios.isAxiosError(error)) {

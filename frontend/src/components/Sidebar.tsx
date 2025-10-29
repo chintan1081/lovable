@@ -1,6 +1,8 @@
 import { FiEdit, FiSidebar } from "react-icons/fi";
+import { useNavigate } from "react-router-dom";
 
 const Sidebar = ({ miniSidebar, setMiniSidebar }: { miniSidebar: boolean, setMiniSidebar: Function }) => {
+    const navigate = useNavigate();
     return (
         <div className="border border-r-zinc-800">
             {
@@ -16,21 +18,15 @@ const Sidebar = ({ miniSidebar, setMiniSidebar }: { miniSidebar: boolean, setMin
                                 <FiSidebar />
                             </div>
                         </div>
-                        <div className='flex mt-4 text-sm font-semibold gap-2 hover:bg-zinc-700/50 p-3 items-center m-2 cursor-pointer rounded'>
+                        <div onClick={() => navigate("/")} 
+                             className='flex mt-4 text-sm font-semibold gap-2 hover:bg-zinc-700/50 p-3 items-center m-2 cursor-pointer rounded'>
                             <div className='text-lg'><FiEdit /></div>
                             New project
                         </div>
                         <div className='px-4 text-xs text-zinc-300'>
                             Chats
                         </div>
-                        <div className="h-[calc(100rem-70rem)]
-                                        overflow-y-auto
-                                        [scrollbar-color:#3f3f46_#18181b]
-                                        [scrollbar-width:thin]
-                                        [&::-webkit-scrollbar]:w-2
-                                      [&::-webkit-scrollbar-track]:bg-zinc-900
-                                      [&::-webkit-scrollbar-thumb]:bg-zinc-700
-                                      [&::-webkit-scrollbar-thumb:hover]:bg-zinc-600">
+                        <div className=" ">
                             <div className='hover:bg-zinc-700/50 p-3 text-sm font-semibold items-center m-1 mx-2 cursor-pointer rounded
                         '>
                                 dsfsdfds

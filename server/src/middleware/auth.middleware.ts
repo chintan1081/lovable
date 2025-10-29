@@ -25,7 +25,7 @@ const AuthMiddleware = (req: Request, res: Response, next: NextFunction) => {
     }
     console.log(verify);
     
-    next()
+    // next()
 }
 
 export default AuthMiddleware;
