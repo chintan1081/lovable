@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom"
+import { Link, useLocation } from "react-router-dom"
 import { LuLightbulb } from "react-icons/lu";
 import { FiArrowUp, FiChevronRight, FiCode, FiEye } from "react-icons/fi";
 import { PiTreeStructureBold } from "react-icons/pi";
@@ -6,102 +6,10 @@ import Editor from "@monaco-editor/react";
 
 
 const Project = () => {
-  const code = `import Editor from "@monaco-editor/react";
-export default function ReadOnlyEditor() {
-  return (
-    <Editor
-      height="400px"
-      defaultLanguage="javascript"
-      defaultValue={}
-      theme="vs-dark"
-      options={{
-        readOnly: true,     // 🧠 makes the editor read-only
-        domReadOnly: true,  // 🧱 prevents even programmatic edits
-        minimap: { enabled: false },
-        scrollBeyondLastLine: false,
-      }}
-    />
-  )
-}
-  import Editor from "@monaco-editor/react";
-export default function ReadOnlyEditor() {
-  return (
-    <Editor
-      height="400px"
-      defaultLanguage="javascript"
-      defaultValue={}
-      theme="vs-dark"
-      options={{
-        readOnly: true,     // 🧠 makes the editor read-only
-        domReadOnly: true,  // 🧱 prevents even programmatic edits
-        minimap: { enabled: false },
-        scrollBeyondLastLine: false,
-      }}
-    />
-  )
-}
-  import Editor from "@monaco-editor/react";
-export default function ReadOnlyEditor() {
-  return (
-    <Editor
-      height="400px"
-      defaultLanguage="javascript"
-      defaultValue={}
-      theme="vs-dark"
-      options={{
-        readOnly: true,     // 🧠 makes the editor read-only
-        domReadOnly: true,  // 🧱 prevents even programmatic edits
-        minimap: { enabled: false },
-        scrollBeyondLastLine: false,
-      }}
-    />
-  )
-}
-  import Editor from "@monaco-editor/react";
-export default function ReadOnlyEditor() {
-  return (
-    <Editor
-      height="400px"
-      defaultLanguage="javascript"
-      defaultValue={}
-      theme="vs-dark"
-      options={{
-        readOnly: true,     // 🧠 makes the editor read-only
-        domReadOnly: true,  // 🧱 prevents even programmatic edits
-        minimap: { enabled: false },
-        scrollBeyondLastLine: false,
-      }}
-    />
-  )
-}
-  import Editor from "@monaco-editor/react";
-export default function ReadOnlyEditor() {
-  return (
-    <Editor
-      height="400px"
-      defaultLanguage="javascript"
-      defaultValue={}
-      theme="vs-dark"
-      options={{
-        readOnly: true,     // 🧠 makes the editor read-only
-        domReadOnly: true,  // 🧱 prevents even programmatic edits
-        minimap: { enabled: false },
-        scrollBeyondLastLine: false,
-      }}
-    />
-  )
-}
-  import Editor from "@monaco-editor/react";
-export default function ReadOnlyEditor() {
-  return (
-    <Editor
-      height="400px"
-      defaultLanguage="javascript"
-      defaultValue={}
-      theme="vs-dark"
-      options={{
-        readOnly: true,     // 🧠 makes the editor read-only
-        domReadOnly: true,  // 🧱 prevents even programmatic edits
+  const location = useLocation();
+  const prompt = location.state.prompt;
+  
+  const code = `even programmatic edits
         minimap: { enabled: false },
         scrollBeyondLastLine: false,
       }}

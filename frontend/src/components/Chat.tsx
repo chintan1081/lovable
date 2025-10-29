@@ -1,20 +1,34 @@
 import { Post } from "@/utils/axios";
+import axios from "axios";
 import { useState } from "react"
 import { FiArrowUp } from "react-icons/fi"
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 const Chat = () => {
+  const navigate = useNavigate();
   const [prompt, setPrompt] = useState<string>();
   const HandlePrompt = async () => {
     try {
       const response = await Post("/v0/api/project", {
         prompt
       });
-      if(!response.data.success){
-        toast.success(response.data.message)
+
+      if (response.data.success) {
+        const project = response.data.data;
+        console.log(project);
+        navigate(`/project/${project.id}`, {
+          state: {
+            prompt
+          }
+        })
       }
     } catch (error) {
-
+      if (axios.isAxiosError(error)) {
+        toast.error(error.response?.data.message);
+      } else {
+        toast.error("Network or server error");
+      }
     }
 
   }
@@ -38,13 +52,13 @@ const Chat = () => {
           onKeyDown={(e) => {
             if (e.key === "Enter" && !e.shiftKey) {
               e.preventDefault();
-              HandlePrompt;
+              HandlePrompt();
             }
           }}
           className="flex-1 w-full outline-0 min-h-24" id="msg" placeholder="let's build website">
         </textarea>
         <button onClick={HandlePrompt}
-          className="flex-none bg-white px-3 py-3 text-lg rounded-full text-black"
+          className="flex-none cursor-pointer hover:bg-white/90 duration-200 bg-white px-3 py-3 text-lg rounded-full text-black"
         >
           <FiArrowUp />
         </button>

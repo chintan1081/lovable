@@ -21,7 +21,7 @@ function App() {
             <Route element={<RoutesWithSidebar />}>
               <Route path="/" element={<Chat />} />
             </Route>
-            <Route path="/project" element={<Project />} />
+            <Route path="/project/:id" element={<Project />} />
           </Route>
         </Routes>
       </ThemeProvider>

@@ -13,9 +13,9 @@ const AuthMiddleware = (req: Request, res: Response, next: NextFunction) => {
         return
     }
 
-    const verify = jwt.verify(token, process.env.JWT_AUTH!);
+    const user : any = jwt.verify(token, process.env.JWT_AUTH!);
 
-    if(!verify){
+    if(!user){
         res.status(401).json({
             success: false,
             data: null,
@@ -23,9 +23,8 @@ const AuthMiddleware = (req: Request, res: Response, next: NextFunction) => {
         });
         return;
     }
-    console.log(verify);
-    
-    // next()
+    (req as any).userId = user.userId;
+    next()
 }
 
 export default AuthMiddleware;

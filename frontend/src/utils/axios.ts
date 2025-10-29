@@ -3,7 +3,7 @@ import Cookies from "js-cookie";
 
 export const Post = async (url: string, data: any, headers?: any) => {
     const token = Cookies.get("token");
-        return await axios.post(url,{
+        return await axios.post(`${import.meta.env.VITE_BACKEND_URL}${url}`,{
             ...data
         },{
             headers: {
