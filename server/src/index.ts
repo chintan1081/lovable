@@ -11,6 +11,7 @@ import { SYSTEM_PROMPT } from "./prompts";
 import { createFile, updateFile, deleteFile, readFile } from "./tools";
 import { Sandbox } from '@e2b/code-interpreter'
 import AuthMiddleware from "./middleware/auth.middleware";
+import { s3GetObject, s3ListObject, s3PutObject } from "./services/s3PutGet.service";
 
 const app = express();
 const port = process.env.BACKEND_PORT;
@@ -23,8 +24,11 @@ DbInitialization();
 app.use("/v0/api/auth", AuthController);
 app.use("/v0/api", AuthMiddleware, ProjectController);
 
-app.get("/prompt", AuthMiddleware, async (req, res) => {
-    // const { prompt } = req.body;
+app.get("/prompt", async (req, res) => {
+    // s3PutObject("test1")
+    // s3ListObject("projectId");
+    // // const { prompt } = req.body;
+    // const prompt = req.params.prompt;
     const sandbox = await Sandbox.create('ce50a2e02xkmkz0igbf3')
 
     const host = sandbox.getHost(5173)

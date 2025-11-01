@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { tool } from "ai";
 import { Sandbox } from "@e2b/code-interpreter";
+import { uploadSingleFile } from "../services/s3PutGet.service";
 
 export const createFile = (sandbox: Sandbox) => tool({
   description: 'Create a file at a certain directory',
@@ -10,8 +11,8 @@ export const createFile = (sandbox: Sandbox) => tool({
   }),
   execute: async ({ location, content }: { location: string, content: string }) => {
     await sandbox.files.write(location, content);
-    console.log(location,content,'...........createfile');
-    
+    console.log(location,'...........createfile');
+    uploadSingleFile(`projectId/${location}`, content)
     return `File created`;
   },
 });
@@ -23,8 +24,9 @@ export const updateFile = (sandbox: Sandbox) => tool({
     content: z.string().describe('Content of the file'),
   }),
   execute: async ({ location, content }: { location: string, content: string }) => {
-    console.log(location,content,'...........update');
+    console.log(location,'...........update');
     await sandbox.files.write(location, content);
+    uploadSingleFile(`projectId/${location}`, content)
     return `File updated`;
   },
 });
