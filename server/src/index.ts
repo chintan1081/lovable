@@ -29,37 +29,37 @@ app.get("/prompt", async (req, res) => {
     // s3ListObject("projectId");
     // // const { prompt } = req.body;
     // const prompt = req.params.prompt;
-    const sandbox = await Sandbox.create('ce50a2e02xkmkz0igbf3')
+    // const sandbox = await Sandbox.create('ce50a2e02xkmkz0igbf3')
 
-    const host = sandbox.getHost(5173)
+    // const host = sandbox.getHost(5173)
 
-    // TODO:  create sandbox for user
-    const prompt = "create a landing page for school it should mention all necessary details"
-    const openrouter = createOpenRouter({
-        apiKey: process.env.OPENROUTER_API_KEY!,
-    });
-    const response = streamText({
-        model: openrouter("gpt-4o-mini"),
-        tools: {
-            createFile: createFile(sandbox),
-            updateFile: updateFile(sandbox),
-            deleteFile: deleteFile(sandbox),
-            readFile: readFile(sandbox)
-        },
-        messages: [
-            {
-                role: "system",
-                content: SYSTEM_PROMPT
-            },
-            {
-                role: "user",
-                content: prompt
-            }
-        ]
-    });
+    // // TODO:  create sandbox for user
+    // const prompt = "create a landing page for school it should mention all necessary details"
+    // const openrouter = createOpenRouter({
+    //     apiKey: process.env.OPENROUTER_API_KEY!,
+    // });
+    // const response = streamText({
+    //     model: openrouter("gpt-4o-mini"),
+    //     tools: {
+    //         createFile: createFile(sandbox),
+    //         updateFile: updateFile(sandbox),
+    //         deleteFile: deleteFile(sandbox),
+    //         readFile: readFile(sandbox)
+    //     },
+    //     messages: [
+    //         {
+    //             role: "system",
+    //             content: SYSTEM_PROMPT
+    //         },
+    //         {
+    //             role: "user",
+    //             content: prompt
+    //         }
+    //     ]
+    // });
     
-    console.log(`https://${host}`);
-    response.pipeTextStreamToResponse(res);
+    // console.log(`https://${host}`);
+    // response.pipeTextStreamToResponse(res);
 });
 
 app.listen(port, () => {

@@ -14,7 +14,6 @@ const s3PutObject = (projectId: string) => {
     const localPath = path.join(__dirname, "../../../my-react-app")
     const remotePath = projectId;
     uploadToS3(localPath, remotePath);
-
 }
 
 const uploadToS3 = (localPath: string, remotePath: string) => {
@@ -40,35 +39,36 @@ const uploadToS3 = (localPath: string, remotePath: string) => {
     })
 };
 
-const uploadSingleFile = async(remotePath: string, content: any) =>  {
-    await s3Client.send(new PutObjectCommand({
-                        Bucket: process.env.AWS_BUCKET_NAME!,
-                        Key: remotePath,
-                        Body: content
-                    }));
+const uploadSingleFile = async (remotePath: string, content: any) => {
+    await s3Client.send(
+        new PutObjectCommand({
+            Bucket: process.env.AWS_BUCKET_NAME!,
+            Key: remotePath,
+            Body: content
+        }));
 }
 
 const s3GetObject = async (projectId: string) => {
     const response = await s3Client.send(
-      new GetObjectCommand({
-        Bucket: process.env.AWS_BUCKET_NAME!,
-        Key: `${projectId}/`,
-      }),
+        new GetObjectCommand({
+            Bucket: process.env.AWS_BUCKET_NAME!,
+            Key: `${projectId}`,
+        }),
     );
-    console.log(response,'...............');
-    
+    console.log(response, '...............');
+
 }
 
 const s3ListObject = async (projectId: string) => {
     // const url = getObjectUrl
     const response = await s3Client.send(
-      new ListObjectsV2Command({
-        Bucket: process.env.AWS_BUCKET_NAME!,
-        Prefix: `${projectId}/`
-      }),
+        new ListObjectsV2Command({
+            Bucket: process.env.AWS_BUCKET_NAME!,
+            Prefix: `${projectId}/`
+        }),
     );
-    console.log(response,'...............');
-    
+    console.log(response, '...............');
+
 }
 
 export { s3PutObject, s3GetObject, s3ListObject, uploadSingleFile };

@@ -1,16 +1,12 @@
 import { Router } from "express";
-import { S3Client, PutObjectCommand, GetObjectCommand, ListBucketsCommand } from "@aws-sdk/client-s3";
-import fs from "fs";
-import z, { success } from "zod";
 import AppDataSource from "../config/db.config";
 import { Project } from "../entities/project.entity";
 import { promptSchema } from "../types";
-import AuthMiddleware from "../middleware/auth.middleware";
 import { User } from "../entities/user.entity";
 import { conversationService } from "../services/conversation.service";
 import { Conversation, ConversationMessageFrom, ConversationType } from "../entities/conversation.entity";
+import { llmCallService } from "../services/sandbox.service";
 
-// const s3 = new S3Client({ region: process.env.AWS_REGION! });
 const router = Router();
 
 const projectRepo = AppDataSource.getRepository(Project);
@@ -141,7 +137,9 @@ router.post('/project/conversation/:projectId', async (req, res) => {
         ConversationMessageFrom.USER,
         data.prompt,
     );
-    
+
+    await llmCallService(project, data.prompt);
+
     res.status(200).json({
         success: true,
         message: "Conversation created successfully",
