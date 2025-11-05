@@ -10,7 +10,7 @@ const Chat = () => {
   const [prompt, setPrompt] = useState<string>();
   const HandlePrompt = async () => {
     try {
-      const response = await Post("/v0/api/project", {
+      const response = await Post("/api/v0/project", {
         prompt
       });
 

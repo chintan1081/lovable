@@ -1,14 +1,54 @@
-import { Link, useLocation } from "react-router-dom"
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom"
 import { LuLightbulb } from "react-icons/lu";
 import { FiArrowUp, FiChevronRight, FiCode, FiEye } from "react-icons/fi";
 import { PiTreeStructureBold } from "react-icons/pi";
 import Editor from "@monaco-editor/react";
+import { useEffect, useState } from "react";
+import { Get, Post } from "@/utils/axios";
 
+type conversation = {
+  messageFrom: String,
+  contents: String
+}
 
 const Project = () => {
+
   const location = useLocation();
-  const prompt = location.state.prompt;
-  
+  const navigate = useNavigate();
+
+  const prompt = location.state?.prompt;
+  const { id: projectId } = useParams();
+  const [conversations, setConversations] = useState<conversation[]>([]);
+
+
+  useEffect(() => {
+    if (prompt) {
+      setConversations((prev: conversation[]) => ([
+        ...prev,
+        {
+          messageFrom: "USER",
+          contents: prompt
+        }
+      ]));
+
+      Post(`/api/v0/project/conversation/${projectId}`, { prompt })
+        .then((response) => {
+          console.log(response);
+          navigate(location.pathname, { replace: true, state: {} });
+        });
+
+    }
+  }, [prompt]);
+
+  useEffect(() => {
+    Get(`/api/v0/project/conversation/${projectId}`)
+      .then((response) => {
+        if (response.data.success) {
+          setConversations(response.data.data);
+        }
+      })
+  }, [])
+
   const code = `even programmatic edits
         minimap: { enabled: false },
         scrollBeyondLastLine: false,
@@ -25,9 +65,10 @@ const Project = () => {
               Projects
             </Link>
             <p className="p-2 text-xl text-zinc-600 font-semibold">/</p>
-            <p className="p-1 cursor-pointer hover:bg-zinc-700/50 rounded">project-2</p>
+            <p className="p-1 w-48 cursor-pointer hover:bg-zinc-700/50 rounded truncate">{projectId}</p>
           </div>
-          <div className="mt-4 p-2 gap-2
+          {conversations.map((conversation, index) => 
+          <div key={index} className="mt-4 p-2 gap-2
                           w-full flex flex-col
                           h-[calc(100rem-66rem)]
                           overflow-y-auto
@@ -38,12 +79,16 @@ const Project = () => {
                           [&::-webkit-scrollbar-thumb]:bg-zinc-700
                           [&::-webkit-scrollbar-thumb:hover]:bg-zinc-600
                 ">
-            <p className="w-72 self-end p-2 mb-3 break-words rounded-2xl bg-zinc-700/50">dfsdfsdfdfsdfsdfdfsdfsdfdfsdfsdfdfsdfsdfdfsdfsdfdfsdfsdfdfsdfsdfdfsdfsdfdfsdfsdfdfsdfsdfdfsdfsdfdfsdfsdfdfsdfsdf</p>
-            <div className="p-2">
+            {conversation.messageFrom === "USER" &&
+              <p className="w-72 self-end p-4 mb-3 break-words rounded-2xl bg-zinc-700/50">
+                {conversation.contents}
+              </p>}
+            {conversation.messageFrom === "ASSISTANT" && 
+            <div className="p-4">
               <p className="text-sm mb-3 text-zinc-400 flex gap-2 items-center"><LuLightbulb /> Thoughts</p>
-              <p className="break-words">dfsdfsdfdfsdfsdfdfsdfsdfdfsdfsdfdfsdfsdfdfsdfsdfdfsdfsdfdfsdfsdfdfsdfsdfdfsdfsdfdfsdfsdfdfsdfsdfdfsdfsdfdfsdfsdf</p>
-            </div>
-          </div>
+              <p className="break-words">{conversation.contents}</p>
+            </div>}
+          </div>)}
         </div>
         <div className="mb-4 w-full flex flex-col items-end rounded-xl border-2 border-gray-600">
           <textarea className="flex-1 w-full m-2 min-h-24 rounded-xl px-6 outline-0

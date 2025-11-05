@@ -41,7 +41,7 @@ export class Conversation{
     @Column({ type: "boolean", default: false })
     hidden: boolean;
 
-    @Column({ type: "jsonb"})
+    @Column({ type: "jsonb", nullable: true})
     toolMetadata: string;
 
     @Column({ type: "enum", enum: ConversationToolCall, default: null })

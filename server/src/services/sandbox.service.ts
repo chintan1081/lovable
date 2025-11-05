@@ -1,6 +1,6 @@
 import { createOpenRouter } from '@openrouter/ai-sdk-provider';
 import { streamText } from 'ai';
-import { createFile, updateFile, deleteFile, readFile } from "../tools/index";
+import { createFile, updateFile, deleteFile, readFile, assistantRes } from "../tools/index";
 import { Sandbox } from '@e2b/code-interpreter';
 import { SYSTEM_PROMPT } from '../prompts';
 import { Project } from '../entities/project.entity';
@@ -24,13 +24,15 @@ export const llmCallService = async ( project: Project, prompt: string ) => {
             createFile: createFile(sandbox, project),
             updateFile: updateFile(sandbox, project),
             deleteFile: deleteFile(sandbox, project),
-            readFile: readFile(sandbox, project)
+            readFile: readFile(sandbox, project),
+            assistantRes: assistantRes(project)
         },
         messages: [
             {
                 role: "system",
                 content: SYSTEM_PROMPT
             },
+            ...prevMessage,
             {
                 role: "user",
                 content: prompt
@@ -38,6 +40,8 @@ export const llmCallService = async ( project: Project, prompt: string ) => {
         ]
     });
 
+    console.log(response,'llm response');
+    
     console.log(`https://${host}`);
     return response;
 }

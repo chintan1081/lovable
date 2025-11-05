@@ -109,6 +109,7 @@ router.get('/project/:projectId', async (req, res) => {
 })
 
 router.post('/project/conversation/:projectId', async (req, res) => {
+    
     const projectId = req.params.projectId;
     const project = await projectRepo.findOne({ where: {
         id: projectId
@@ -121,6 +122,7 @@ router.post('/project/conversation/:projectId', async (req, res) => {
         });
         return
     }
+    console.log(projectId,'...........xss');
 
     const { success, data } = promptSchema.safeParse(req.body);
     if(!success){
@@ -149,10 +151,13 @@ router.post('/project/conversation/:projectId', async (req, res) => {
 
 router.get('/project/conversation/:projectId', async(req, res) => {
     const projectId = req.params.projectId;
+    
     const conversation = await conversationrepo.find({
         where: {
-            projectId
-        }
+            projectId,
+            hidden: false
+        },
+        select: ["contents", "messageFrom"]
     });
     
     if(!conversation){

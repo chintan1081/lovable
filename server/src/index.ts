@@ -22,7 +22,7 @@ app.use(cors({ origin: "*" }));
 DbInitialization();
 
 app.use("/v0/api/auth", AuthController);
-app.use("/v0/api", AuthMiddleware, ProjectController);
+app.use("/api/v0", AuthMiddleware, ProjectController);
 
 app.get("/prompt", async (req, res) => {
     // s3PutObject("test1")

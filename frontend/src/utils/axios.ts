@@ -12,3 +12,13 @@ export const Post = async (url: string, data: any, headers?: any) => {
             }
         })
     }
+
+export const Get = async (url: string, headers?: any) => {
+    const token = Cookies.get("token");
+        return await axios.get(`${import.meta.env.VITE_BACKEND_URL}${url}`,{
+            headers: {
+                "authorization": `Bearer ${token}`,
+                ...headers
+            }
+        })
+    }

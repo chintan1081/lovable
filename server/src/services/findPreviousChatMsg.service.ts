@@ -2,18 +2,6 @@ import AppDataSource from "../config/db.config";
 import { Conversation } from "../entities/conversation.entity";
 
 const conversationRepo = AppDataSource.getRepository(Conversation);
-// type HistoryMessage =
-//   | { role: "user", content: string }
-//   | { role: "system", content: string }
-//   | {
-//       role: "assistant",
-//       tool_calls: {
-//         id: string,
-//         name: string,
-//         arguments: string,
-//       }
-//     }
-//   | { role: "tool", tool_call_id: string, content: string }
 
 export const findPreviousChatMsgService = async (projectId: string) => {
     const conversations = await conversationRepo.find({
@@ -22,42 +10,42 @@ export const findPreviousChatMsgService = async (projectId: string) => {
         }
     });
 
-    const history = conversations.map((conversation) => {
+    const history: any[] = []
+    conversations.forEach((conversation) => {
         if (conversation.messageFrom === "USER") {
-            return {
+            history.push({
                 role: "user",
                 content: conversation.contents
-            }
+            });
         }
 
         if (conversation.type === "TEXT_MESSAGE") {
-            return {
+            history.push({
                 role: "system",
                 content: conversation.contents
-            }
+            });
         }
 
-        if(conversation.messageFrom === "ASSISTANT"){
-            return {
+        if (conversation.messageFrom === "ASSISTANT") {
+            history.push({
                 role: "assistant",
                 tool_calls: [
                     {
                         id: conversation.id,
                         name: conversation.toolCall,
                         arguments: JSON.stringify({
-                            location: (conversation.toolMetadata as any).location}),
-                            content: conversation.contents
+                            location: (conversation.toolMetadata as any).location
+                        }),
+                        content: conversation.contents
                     }
                 ]
-            }
-        }
+            });
 
-        if(conversation.messageFrom === "ASSISTANT"){
-            return {
+            history.push({
                 role: "tool",
                 tool_call_id: conversation.id,
                 content: (conversation.toolMetadata as any).returnContent
-            }
+            });
         }
     });
 
