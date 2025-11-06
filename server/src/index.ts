@@ -11,7 +11,9 @@ import { SYSTEM_PROMPT } from "./prompts";
 import { createFile, updateFile, deleteFile, readFile } from "./tools";
 import { Sandbox } from '@e2b/code-interpreter'
 import AuthMiddleware from "./middleware/auth.middleware";
+import http from "http";
 import { s3GetObject, s3ListObject, s3PutObject } from "./services/s3PutGet.service";
+import webSocketService from "./services/webSocket.service";
 
 const app = express();
 const port = process.env.BACKEND_PORT;
@@ -62,6 +64,9 @@ app.get("/prompt", async (req, res) => {
     // response.pipeTextStreamToResponse(res);
 });
 
+const server = http.createServer(app);
+
+webSocketService(server);
 app.listen(port, () => {
     console.log(`Backend running on port running on ${port}`);
 },)

@@ -90,23 +90,23 @@ export const readFile = (sandbox: Sandbox, project: Project) => tool({
   },
 });
 
-export const assistantRes = (project: Project) => tool({
-  description: `Summarize the assistant's recent work or actions in **less than 30 words**.
-  Call this tool when a brief explanation of what has been done is required.
-  Input: "content" = description of the work completed.
-  Output: short summary sentence.`,
-  inputSchema: z.object({
-    content: z.string().describe('Details of the task/work performed'),
-  }),
-  execute: async ({ content }: { content: string }) => {
-    console.log(content, '...........content');
-    await conversationService(
-      project,
-      ConversationType.TEXT_MESSAGE,
-      ConversationMessageFrom.ASSISTANT,
-      content,
-    );
+// export const assistantRes = (project: Project) => tool({
+//   description: `Summarize the assistant's recent work or actions in **less than 30 words**.
+//   Call this tool when a brief explanation of what has been done is required.
+//   Input: "content" = description of the work completed.
+//   Output: short summary sentence.`,
+//   inputSchema: z.object({
+//     content: z.string().describe('Details of the task/work performed'),
+//   }),
+//   execute: async ({ content }: { content: string }) => {
+//     console.log(content, '...........content');
+//     await conversationService(
+//       project,
+//       ConversationType.TEXT_MESSAGE,
+//       ConversationMessageFrom.ASSISTANT,
+//       content,
+//     );
 
-    return `assistent`;
-  },
-});
+//     return `assistent`;
+//   },
+// });

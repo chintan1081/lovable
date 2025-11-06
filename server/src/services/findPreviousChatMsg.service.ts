@@ -19,34 +19,34 @@ export const findPreviousChatMsgService = async (projectId: string) => {
             });
         }
 
-        if (conversation.type === "TEXT_MESSAGE") {
+        if (conversation.messageFrom === "ASSISTANT" && conversation.type === "TEXT_MESSAGE") {
             history.push({
                 role: "system",
                 content: conversation.contents
             });
         }
 
-        if (conversation.messageFrom === "ASSISTANT") {
-            history.push({
-                role: "assistant",
-                tool_calls: [
-                    {
-                        id: conversation.id,
-                        name: conversation.toolCall,
-                        arguments: JSON.stringify({
-                            location: (conversation.toolMetadata as any).location
-                        }),
-                        content: conversation.contents
-                    }
-                ]
-            });
+        // if (conversation.messageFrom === "ASSISTANT" && conversation.type === "TOOL_CALL") {
+        //     history.push({
+        //         role: "assistant",
+        //         tool_calls: [
+        //             {
+        //                 id: conversation.id,
+        //                 name: conversation.toolCall,
+        //                 arguments: JSON.stringify({
+        //                     location: (conversation.toolMetadata as any).location
+        //                 }),
+        //                 content: conversation.contents
+        //             }
+        //         ]
+        //     });
 
-            history.push({
-                role: "tool",
-                tool_call_id: conversation.id,
-                content: (conversation.toolMetadata as any).returnContent
-            });
-        }
+        //     history.push({
+        //         role: "tool",
+        //         tool_call_id: conversation.id,
+        //         content: (conversation.toolMetadata as any).returnContent
+        //     });
+        // }
     });
 
     return history;

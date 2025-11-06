@@ -5,7 +5,7 @@ import { promptSchema } from "../types";
 import { User } from "../entities/user.entity";
 import { conversationService } from "../services/conversation.service";
 import { Conversation, ConversationMessageFrom, ConversationType } from "../entities/conversation.entity";
-import { llmCallService } from "../services/sandbox.service";
+import { llmCallService } from "../services/llmCallService.service";
 
 const router = Router();
 

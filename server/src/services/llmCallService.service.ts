@@ -1,12 +1,14 @@
 import { createOpenRouter } from '@openrouter/ai-sdk-provider';
 import { streamText } from 'ai';
-import { createFile, updateFile, deleteFile, readFile, assistantRes } from "../tools/index";
+import { createFile, updateFile, deleteFile, readFile } from "../tools/index";
 import { Sandbox } from '@e2b/code-interpreter';
 import { SYSTEM_PROMPT } from '../prompts';
 import { Project } from '../entities/project.entity';
 import { findPreviousChatMsgService } from './findPreviousChatMsg.service';
+import { conversationService } from './conversation.service';
+import { ConversationMessageFrom, ConversationType } from '../entities/conversation.entity';
 
-export const llmCallService = async ( project: Project, prompt: string ) => {
+export const llmCallService = async (project: Project, prompt: string) => {
     const sandbox = await Sandbox.create('ce50a2e02xkmkz0igbf3')
 
     const host = sandbox.getHost(5173)
@@ -25,7 +27,6 @@ export const llmCallService = async ( project: Project, prompt: string ) => {
             updateFile: updateFile(sandbox, project),
             deleteFile: deleteFile(sandbox, project),
             readFile: readFile(sandbox, project),
-            assistantRes: assistantRes(project)
         },
         messages: [
             {
@@ -40,8 +41,26 @@ export const llmCallService = async ( project: Project, prompt: string ) => {
         ]
     });
 
-    console.log(response,'llm response');
+    // console.log(await response.content,'llm response');
+    //     for await (const delta of response.textStream) {
+    //   process.stdout.write(delta);
+    // }
+
+    console.log(response?.content, "llm");
     
+    const content = response && await response?.content;
+
+    if (response && content) {
+        if (content[0]?.type === "text") {
+            await conversationService(
+                project,
+                ConversationType.TEXT_MESSAGE,
+                ConversationMessageFrom.ASSISTANT,
+                content[0].text
+            );
+        }
+    }
+
     console.log(`https://${host}`);
     return response;
 }

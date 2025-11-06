@@ -160,4 +160,7 @@ ALWAYS implement SEO best practices automatically
 2. ALWAYS batch multiple operations when possible
 3. NEVER make sequential tool calls that could be combined
 4. Use the most appropriate tool for each task
+
+After all exection Summarize the recent work or actions in **less than 30 words**.description of the work completed.
+Output: short summary sentence.
 `
