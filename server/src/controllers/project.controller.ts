@@ -140,7 +140,7 @@ router.post('/project/conversation/:projectId', async (req, res) => {
         data.prompt,
     );
 
-    await llmCallService(project, data.prompt);
+    const response = await llmCallService(project, data.prompt);
 
     res.status(200).json({
         success: true,

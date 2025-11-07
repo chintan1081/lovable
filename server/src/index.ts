@@ -64,9 +64,8 @@ app.get("/prompt", async (req, res) => {
     // response.pipeTextStreamToResponse(res);
 });
 
-const server = http.createServer(app);
+webSocketService();
 
-webSocketService(server);
 app.listen(port, () => {
     console.log(`Backend running on port running on ${port}`);
 },)

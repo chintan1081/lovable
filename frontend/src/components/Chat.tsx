@@ -13,15 +13,12 @@ const Chat = () => {
       const response = await Post("/api/v0/project", {
         prompt
       });
-
+      
       if (response.data.success) {
         const project = response.data.data;
         console.log(project);
-        navigate(`/project/${project.id}`, {
-          state: {
-            prompt
-          }
-        })
+        Post(`/api/v0/project/conversation/${project.id}`, { prompt })
+        navigate(`/project/${project.id}`)
       }
     } catch (error) {
       if (axios.isAxiosError(error)) {

@@ -7,15 +7,14 @@ import { useWebSocket } from "./custom_hooks/useWebSocket";
 
 
 const Project = () => {
-  const location = useLocation();
-  const prompt = location.state?.prompt;
   const { id: projectId } = useParams();
+
   if(!projectId) return;
-  const { socket } = useWebSocket(projectId);
+  const { stream } = useWebSocket(projectId);
 
   return (
     <div className="grid grid-cols-[450px_1fr] w-full h-screen">
-      <ProjectSidebar prompt={prompt} projectId={projectId} />
+      <ProjectSidebar stream={stream} projectId={projectId} />
       <div className="flex flex-col w-full">
         <div className="flex">
           <div className="flex mt-2 p-1 px-2 items-center border rounded-2xl">

@@ -7,10 +7,11 @@ import { Project } from '../entities/project.entity';
 import { findPreviousChatMsgService } from './findPreviousChatMsg.service';
 import { conversationService } from './conversation.service';
 import { ConversationMessageFrom, ConversationType } from '../entities/conversation.entity';
+import { wsSendToClint } from './webSocket.service';
 
 export const llmCallService = async (project: Project, prompt: string) => {
     const sandbox = await Sandbox.create('ce50a2e02xkmkz0igbf3')
-
+    
     const host = sandbox.getHost(5173)
 
     // const prompt = "create a landing page for school it should mention all necessary details"
@@ -41,15 +42,16 @@ export const llmCallService = async (project: Project, prompt: string) => {
         ]
     });
 
-    // console.log(await response.content,'llm response');
-    //     for await (const delta of response.textStream) {
-    //   process.stdout.write(delta);
-    // }
+    for await (const delta of response.textStream) {
+        wsSendToClint({
+            projectId: project.id,
+            type: "stream",
+            data: delta
+        })
+        process.stdout.write(delta);
+    }
 
-    console.log(response?.content, "llm");
-    
     const content = response && await response?.content;
-
     if (response && content) {
         if (content[0]?.type === "text") {
             await conversationService(
@@ -61,6 +63,13 @@ export const llmCallService = async (project: Project, prompt: string) => {
         }
     }
 
-    console.log(`https://${host}`);
+    wsSendToClint({
+        projectId: project.id,
+        type: "sandboxUrl",
+        data: {
+            url: `https://${host}`
+        }
+    });
+
     return response;
 }

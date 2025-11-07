@@ -1,27 +1,54 @@
-import { Server } from "http";
-import { WebSocketServer } from "ws";
+import strict from "assert/strict";
+import { WebSocketServer, WebSocket } from "ws";
 
-const clients = new Map();
+interface User {
+    socket: WebSocket,
+    projectId: string
+}
 
-const webSocketService = (data?: any) => {
-    const wss = new WebSocketServer({ port: Number(process.env.WEBSOCKETPORT) });
+let allSocket: User[] = [];
+let socketCount: number = 0;
 
-    wss.on("connection", (ws, req) => {
-        console.log("connection", ws);
-        
-        wss.on("message", () => {
+const wss = new WebSocketServer({ port: Number(process.env.WEBSOCKETPORT) });
 
+const webSocketService = () => {
+    wss.on("connection", (socket: WebSocket) => {
+        socketCount += 1;
+        console.log("connection",socketCount);
+        socket.on("message", (message: any) => {
+            const projectId = JSON.parse(message).projectId;
+            allSocket.push({
+                socket,
+                projectId
+            })
+            console.log(projectId,'socketCount');
         });
 
-        wss.on("close", () => {
-
+        socket.on("close", () => {
+        allSocket = allSocket.filter((s) => s.socket !== socket);
+        console.log(allSocket,'...............socket');
+        
+        socketCount -= 1;
         })
 
-        wss.on("error", (err) => {
+        socket.on("error", (err) => {
             console.error(`⚠️ WebSocket error ():`, err.message);
         })
     })
 
-}
+};
 
 export default webSocketService;
+
+interface ClientData {
+    projectId: String,
+    type: "stream" | "fileStructure" | "sandboxUrl",
+    data: any
+}
+
+export const wsSendToClint = (clientData: ClientData) => {
+        const user = allSocket.find((s) => s.projectId === clientData.projectId);
+        if(user?.socket.readyState === WebSocket.OPEN){
+            user.socket.send(JSON.stringify(clientData))
+        }
+}

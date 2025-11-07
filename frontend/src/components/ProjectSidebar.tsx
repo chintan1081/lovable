@@ -10,33 +10,43 @@ type conversation = {
 }
 
 type ProjectSidebarProps = {
-    prompt: String,
-    projectId: String
+    projectId: String,
+    stream: any | undefined
 }
 
-const ProjectSidebar = ({ prompt, projectId }: ProjectSidebarProps) => {
-    const navigate = useNavigate();
-    const postedRef = useRef(false);
-
+const ProjectSidebar = ({ projectId, stream }: ProjectSidebarProps) => {
     const [conversations, setConversations] = useState<conversation[]>([]);
-    const [ currentPrompt, setCurrentPrompt ] = useState("");
+    const [currentPrompt, setCurrentPrompt] = useState("");
 
-    useEffect(() => {
-        if (!prompt || postedRef.current) return;
+   useEffect(() => {
+    if(!stream) return;
+  
+    setConversations((prev) => {
+        const lastMsg = prev[prev.length - 1];
+        
+        if(lastMsg && lastMsg.messageFrom === "ASSISTANT"){
+            console.log(stream,'indsetgsdfds slsd ');
+            
+            const update = [...prev];
+            update[prev.length - 1] = {
+                messageFrom: "ASSISTANT",
+                contents: lastMsg.contents + stream
+            }
+            return update;
+        }
 
-        postedRef.current = true;
+            console.log(stream,'from outsidne slsd ');
 
-        setConversations(prev => ([
+        return [
             ...prev,
-            { messageFrom: "USER", contents: prompt }
-        ]));
+            {
+                messageFrom: "ASSISTANT",
+                contents: stream
+            }
+        ]
+    })
 
-        Post(`/api/v0/project/conversation/${projectId}`, { prompt })
-            .then((response) => {
-                console.log(response);
-                navigate(location.pathname, { replace: true, state: {} });
-            });
-    }, [prompt]);
+   }, [stream]);
 
     useEffect(() => {
         Get(`/api/v0/project/conversation/${projectId}`)
@@ -57,7 +67,7 @@ const ProjectSidebar = ({ prompt, projectId }: ProjectSidebarProps) => {
         Post(`/api/v0/project/conversation/${projectId}`, { prompt: currentPrompt })
             .then((response) => {
                 console.log(response);
-        });
+            });
     }
     return (
         <div className="py-2 px-4 flex flex-col justify-between">
@@ -108,11 +118,11 @@ const ProjectSidebar = ({ prompt, projectId }: ProjectSidebarProps) => {
 
             </div>
             <div className="mb-4 w-full flex flex-col items-end rounded-xl border-2 border-gray-600">
-                <textarea 
+                <textarea
                     value={currentPrompt}
                     onChange={(event) => setCurrentPrompt(event.target.value)}
                     onKeyDown={(e) => {
-                        if(e.key === 'Enter' && !e.shiftKey){
+                        if (e.key === 'Enter' && !e.shiftKey) {
                             HandleConversation();
                         }
                     }}
