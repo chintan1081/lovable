@@ -1,8 +1,25 @@
+import { Get } from "@/utils/axios";
+import { useEffect, useState } from "react";
 import { FiEdit, FiSidebar } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 
+type ProjectHistory = {
+    id: string,
+    title: string
+}
+
 const Sidebar = ({ miniSidebar, setMiniSidebar }: { miniSidebar: boolean, setMiniSidebar: Function }) => {
     const navigate = useNavigate();
+
+    const [projectHistory, setProjectHistory] = useState<ProjectHistory[]>([])
+
+    useEffect(() => {
+        Get("/api/v0/projects")
+            .then((response) => {
+                setProjectHistory(response.data.data);
+            })
+    }, []);
+
     return (
         <div className="border border-r-zinc-800">
             {
@@ -18,19 +35,30 @@ const Sidebar = ({ miniSidebar, setMiniSidebar }: { miniSidebar: boolean, setMin
                                 <FiSidebar />
                             </div>
                         </div>
-                        <div onClick={() => navigate("/")} 
-                             className='flex mt-4 text-sm font-semibold gap-2 hover:bg-zinc-700/50 p-3 items-center m-2 cursor-pointer rounded'>
+                        <div onClick={() => navigate("/")}
+                            className='flex mt-4 text-sm font-semibold gap-2 hover:bg-zinc-700/50 p-3 items-center m-2 cursor-pointer rounded'>
                             <div className='text-lg'><FiEdit /></div>
                             New project
                         </div>
                         <div className='px-4 text-xs text-zinc-300'>
                             Chats
                         </div>
-                        <div className=" ">
-                            <div className='hover:bg-zinc-700/50 p-3 text-sm font-semibold items-center m-1 mx-2 cursor-pointer rounded
-                        '>
-                                dsfsdfds
-                            </div>
+                        <div className="h-[calc(100rem-66rem)]
+                                        overflow-y-auto
+                                        [scrollbar-color:#3f3f46_#18181b]
+                                        [scrollbar-width:thin]
+                                        [&::-webkit-scrollbar]:w-2
+                                      [&::-webkit-scrollbar-track]:bg-zinc-900
+                                      [&::-webkit-scrollbar-thumb]:bg-zinc-700
+                                      [&::-webkit-scrollbar-thumb:hover]:bg-zinc-600
+                                        ">
+                            {projectHistory.map((project, index) =>
+                            (<div key={index} onClick={() => {
+                                navigate(`/project/${project.id}`)
+                            }} className='hover:bg-zinc-700/50 truncate p-3 text-sm font-semibold items-center m-1 mx-2 cursor-pointer rounded'>
+                                {project.title}
+                            </div>)
+                            )}
                         </div>
                     </div>
                     :

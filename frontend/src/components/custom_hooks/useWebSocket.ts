@@ -3,10 +3,10 @@ import { useEffect, useRef, useState } from "react";
 
 export const useWebSocket = (projectId: string) => {
 const socket = new WebSocket(`http://localhost:3001`);
-    // const socket = new WebSocket(`${import.meta.env.VITE_WEBSOCKET_URL}/?id=${projectId}`);
     const [stream, setStream] = useState("");
-    const sandboxUrl = useRef("");
-    const fileStructure = useRef({});
+    const [sandboxUrl, setSandboxUrl] = useState("");
+
+    // const fileStructure = useRef({});
 
     useEffect(() => {
         socket.addEventListener("open", () => {
@@ -23,13 +23,12 @@ const socket = new WebSocket(`http://localhost:3001`);
             if (message.type === "stream") {
                 setStream(message.data)
             } else if (message.type === "sandboxUrl") {
-                sandboxUrl.current = message.data;
+                setStream(message.data)
             }
         })
 
         socket.addEventListener("close", () => {
             console.log("ws closed successfully");
-
         })
 
         socket.addEventListener("error", (e) => {

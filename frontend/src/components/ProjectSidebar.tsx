@@ -1,8 +1,8 @@
 import { Get, Post } from '@/utils/axios';
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { FiArrowUp } from 'react-icons/fi';
 import { LuLightbulb } from 'react-icons/lu';
-import { useNavigate, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 type conversation = {
     messageFrom: String,
@@ -55,7 +55,7 @@ const ProjectSidebar = ({ projectId, stream }: ProjectSidebarProps) => {
                     console.log(response.data.data);
                     setConversations(response.data.data);
                 }
-            })
+            });
     }, []);
 
     const HandleConversation = () => {

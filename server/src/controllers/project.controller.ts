@@ -6,7 +6,7 @@ import { User } from "../entities/user.entity";
 import { conversationService } from "../services/conversation.service";
 import { Conversation, ConversationMessageFrom, ConversationType } from "../entities/conversation.entity";
 import { llmCallService } from "../services/llmCallService.service";
-import { s3GetFileStructure, s3UploadDefaultFiles } from "../services/s3PutGet.service";
+import { s3GetFileStructure, s3GetObject, s3UploadDefaultFiles } from "../services/s3PutGet.service";
 
 const router = Router();
 
@@ -182,11 +182,13 @@ router.get('/project/filestructure/:projectId', async(req, res) => {
 
 router.post('/project/file', async(req, res) => {
     const { filePath } = req.body;
-    const fileContent = await s3GetFileStructure(filePath);
+    console.log(filePath,'............');
+    
+    const fileContent = await s3GetObject(filePath);
 
     res.status(200).json({
         success: true,
-        message: "File structure found successfully",
+        message: "File found successfully",
         data: fileContent
     });
 });

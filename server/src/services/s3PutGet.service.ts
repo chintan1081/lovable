@@ -78,33 +78,37 @@ const s3GetObject = async (filePath: string) => {
   const response = await s3Client.send(
     new GetObjectCommand({
       Bucket: process.env.AWS_BUCKET_NAME!,
-      Key: `${filePath}`,
+      Key: filePath,
     }),
   );
 
-  console.log(response,'s2get object');
-  return response;
+  if (!response.Body) {
+    throw new Error("No response body received from S3");
+  }
+
+  const content = await response.Body.transformToString()
+  console.log(content, 's2get object');
+  return content;
 }
 
 const s3GetFileStructure = async (projectId: string) => {
-  try{
-  const response = await s3Client.send(
-    new ListObjectsV2Command({
-      Bucket: process.env.AWS_BUCKET_NAME!,
-      Prefix: `${projectId}/`
-    }),
-  );
-  console.log(response.Contents);
-  
-  if(!response || !response.Contents){
-    throw new Error("Error featching file structure")
-  }
+  try {
+    const response = await s3Client.send(
+      new ListObjectsV2Command({
+        Bucket: process.env.AWS_BUCKET_NAME!,
+        Prefix: `${projectId}/`
+      }),
+    );
 
-  if(response.Contents?.length < 13){
-    return defaultFileStructure;
-  }
+    if (!response || !response.Contents) {
+      throw new Error("Error featching file structure")
+    }
 
-  return response.Contents
+    if (response.Contents?.length < 13) {
+      return defaultFileStructure;
+    }
+
+    return response.Contents
 
   } catch (err) {
     return err;

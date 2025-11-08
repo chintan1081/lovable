@@ -26,7 +26,8 @@ DbInitialization();
 app.use("/v0/api/auth", AuthController);
 app.use("/api/v0", AuthMiddleware, ProjectController);
 
-// app.get("/prompt/:projectId", async (req, res) => {
+app.get("/prompt", async (req, res) => {
+    s3GetObject("sd")
 //         const projectId = req.params.projectId;
 //         if(!projectId) return;
 //     const fileStructure = await s3GetFileStructure(projectId);
@@ -66,7 +67,7 @@ app.use("/api/v0", AuthMiddleware, ProjectController);
     //             content: prompt
     //         }
     //     ]
-    // });
+    });
     
     // console.log(`https://${host}`);
     // response.pipeTextStreamToResponse(res);
