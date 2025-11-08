@@ -6,6 +6,7 @@ import { User } from "../entities/user.entity";
 import { conversationService } from "../services/conversation.service";
 import { Conversation, ConversationMessageFrom, ConversationType } from "../entities/conversation.entity";
 import { llmCallService } from "../services/llmCallService.service";
+import { s3GetFileStructure, s3UploadDefaultFiles } from "../services/s3PutGet.service";
 
 const router = Router();
 
@@ -23,14 +24,14 @@ router.post('/project', async (req, res) => {
         return;
     }
 
-    const userId = (req as any).userId
+    const userId = (req as any).userId;
     const user = await userRepo.findOne({ where: { id: userId } });
     if (!user) {
         res.status(404).json({
             success: false,
             message: "User doesn't exist"
         })
-        return
+        return;
     }
 
     const project = projectRepo.create({
@@ -41,6 +42,7 @@ router.post('/project', async (req, res) => {
     });
 
     await projectRepo.save(project);
+    s3UploadDefaultFiles(project.id)
     res.status(200).json({
         success: true,
         message: "Project created successfully",
@@ -49,20 +51,11 @@ router.post('/project', async (req, res) => {
 });
 
 router.get('/projects', async (req, res) => {
-    const { success, data } = promptSchema.safeParse(req.body);
-    if (!success) {
-        res.status(411).json({
-            success: false,
-            message: "Input parameters are incorrect"
-        });
-        return
-    }
-
     const userId = (req as any).userId;
     if (!userId) {
         res.status(404).json({
             success: false,
-            message: "Projects doesn't exist"
+            message: "User doesn't exist"
         });
         return;
     }
@@ -72,6 +65,10 @@ router.get('/projects', async (req, res) => {
             user: {
                 id: userId
             }
+        },
+        select: ["id", "title"],
+        order: {
+            createdAt: "DESC"
         }
     });
     res.status(200).json({
@@ -87,10 +84,7 @@ router.get('/project/:projectId', async (req, res) => {
         where: {
             id: projectId
         },
-        relations: ["conversations"],
-        order: {
-            createdAt: "DESC"
-        }
+        relations: ["conversations"]
     });
 
     if (!project) {
@@ -122,7 +116,6 @@ router.post('/project/conversation/:projectId', async (req, res) => {
         });
         return
     }
-    console.log(projectId,'...........xss');
 
     const { success, data } = promptSchema.safeParse(req.body);
     if(!success){
@@ -173,6 +166,29 @@ router.get('/project/conversation/:projectId', async(req, res) => {
         message: "Conversation found successfully",
         data: conversation
     })
+});
+
+router.get('/project/filestructure/:projectId', async(req, res) => {
+    const projectId = req.params.projectId;
+    const fileStructure = await s3GetFileStructure(projectId);
+    console.log(fileStructure,'filestslsllllllllllllllllllllll');
+    
+    res.status(200).json({
+        success: true,
+        message: "File structure found successfully",
+        data: fileStructure
+    });
+});
+
+router.post('/project/file', async(req, res) => {
+    const { filePath } = req.body;
+    const fileContent = await s3GetFileStructure(filePath);
+
+    res.status(200).json({
+        success: true,
+        message: "File structure found successfully",
+        data: fileContent
+    });
 });
 
 export default router;

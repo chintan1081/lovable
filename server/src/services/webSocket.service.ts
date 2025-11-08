@@ -46,7 +46,7 @@ interface ClientData {
     data: any
 }
 
-export const wsSendToClint = (clientData: ClientData) => {
+export const wsSendToClient = (clientData: ClientData) => {
         const user = allSocket.find((s) => s.projectId === clientData.projectId);
         if(user?.socket.readyState === WebSocket.OPEN){
             user.socket.send(JSON.stringify(clientData))

@@ -7,7 +7,7 @@ import { Project } from '../entities/project.entity';
 import { findPreviousChatMsgService } from './findPreviousChatMsg.service';
 import { conversationService } from './conversation.service';
 import { ConversationMessageFrom, ConversationType } from '../entities/conversation.entity';
-import { wsSendToClint } from './webSocket.service';
+import { wsSendToClient } from './webSocket.service';
 
 export const llmCallService = async (project: Project, prompt: string) => {
     const sandbox = await Sandbox.create('ce50a2e02xkmkz0igbf3')
@@ -43,7 +43,7 @@ export const llmCallService = async (project: Project, prompt: string) => {
     });
 
     for await (const delta of response.textStream) {
-        wsSendToClint({
+        wsSendToClient({
             projectId: project.id,
             type: "stream",
             data: delta
@@ -63,7 +63,7 @@ export const llmCallService = async (project: Project, prompt: string) => {
         }
     }
 
-    wsSendToClint({
+    wsSendToClient({
         projectId: project.id,
         type: "sandboxUrl",
         data: {

@@ -12,7 +12,7 @@ import { createFile, updateFile, deleteFile, readFile } from "./tools";
 import { Sandbox } from '@e2b/code-interpreter'
 import AuthMiddleware from "./middleware/auth.middleware";
 import http from "http";
-import { s3GetObject, s3ListObject, s3PutObject } from "./services/s3PutGet.service";
+import { s3GetObject, s3GetFileStructure } from "./services/s3PutGet.service";
 import webSocketService from "./services/webSocket.service";
 
 const app = express();
@@ -26,7 +26,15 @@ DbInitialization();
 app.use("/v0/api/auth", AuthController);
 app.use("/api/v0", AuthMiddleware, ProjectController);
 
-app.get("/prompt", async (req, res) => {
+// app.get("/prompt/:projectId", async (req, res) => {
+//         const projectId = req.params.projectId;
+//         if(!projectId) return;
+//     const fileStructure = await s3GetFileStructure(projectId);
+//     res.status(200).json({
+//         success: true,
+//         message: "Conversation found successfully",
+//         data: JSON.stringify(fileStructure)
+//     })
     // s3PutObject("test1")
     // s3ListObject("projectId");
     // // const { prompt } = req.body;
@@ -62,7 +70,7 @@ app.get("/prompt", async (req, res) => {
     
     // console.log(`https://${host}`);
     // response.pipeTextStreamToResponse(res);
-});
+// });
 
 webSocketService();
 
