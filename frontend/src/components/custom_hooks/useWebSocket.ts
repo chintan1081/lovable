@@ -23,7 +23,7 @@ const socket = new WebSocket(`http://localhost:3001`);
             if (message.type === "stream") {
                 setStream(message.data)
             } else if (message.type === "sandboxUrl") {
-                setStream(message.data)
+                setSandboxUrl(message.data)
             }
         })
 
@@ -37,5 +37,5 @@ const socket = new WebSocket(`http://localhost:3001`);
         })
     })
 
-    return { stream }
+    return { stream, sandboxUrl, setSandboxUrl }
 }

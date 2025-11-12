@@ -7,6 +7,8 @@ import { conversationService } from "../services/conversation.service";
 import { Conversation, ConversationMessageFrom, ConversationType } from "../entities/conversation.entity";
 import { llmCallService } from "../services/llmCallService.service";
 import { s3GetFileStructure, s3GetObject, s3UploadDefaultFiles } from "../services/s3PutGet.service";
+import sandboxService from "../services/sandbox.service";
+import { _Object } from "@aws-sdk/client-s3";
 
 const router = Router();
 
@@ -171,7 +173,6 @@ router.get('/project/conversation/:projectId', async(req, res) => {
 router.get('/project/filestructure/:projectId', async(req, res) => {
     const projectId = req.params.projectId;
     const fileStructure = await s3GetFileStructure(projectId);
-    console.log(fileStructure,'filestslsllllllllllllllllllllll');
     
     res.status(200).json({
         success: true,
@@ -182,14 +183,47 @@ router.get('/project/filestructure/:projectId', async(req, res) => {
 
 router.post('/project/file', async(req, res) => {
     const { filePath } = req.body;
-    console.log(filePath,'............');
-    
     const fileContent = await s3GetObject(filePath);
 
     res.status(200).json({
         success: true,
         message: "File found successfully",
         data: fileContent
+    });
+});
+
+
+router.get('/project/preview/:projectId', async(req, res) => {
+    const projectId = req.params.projectId;
+    const { host, sandbox, sandboxAlive } = await sandboxService(projectId);
+    
+    if(sandboxAlive){
+        res.status(200).json({
+        success: true,
+        message: "Preview your website",
+        data: {
+            sandboxUrl: `https://${host}`
+        }
+    });
+    return;
+    }
+
+    const filestructure: _Object[] | undefined = await s3GetFileStructure(projectId);
+    if(!filestructure) throw Error("file structure is not found from s3");
+
+    filestructure.forEach(async(file: any) => {
+        const fileContent = await s3GetObject(file.Key);
+        const pathArr = file.Key.split("/").splice(1);
+        const originalPath = "/" + pathArr.join("/");
+        await sandbox.files.write(originalPath, fileContent);
+    });
+
+    res.status(200).json({
+        success: true,
+        message: "File structure found successfully",
+        data: {
+            sandboxUrl: `https://${host}`
+        }
     });
 });
 

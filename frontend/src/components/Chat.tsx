@@ -8,7 +8,7 @@ import { toast } from "react-toastify";
 const Chat = () => {
   const navigate = useNavigate();
   const [prompt, setPrompt] = useState<string>();
-
+  
   const HandlePrompt = async () => {
     try {
       const response = await Post("/api/v0/project", {

@@ -4,15 +4,22 @@ import ProjectSidebar from "./ProjectSidebar";
 import FileStructure from "./FileStructure";
 import { useWebSocket } from "./custom_hooks/useWebSocket";
 import PreviewWebsite from "./PreviewWebsite";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 const Project = () => {
   const { id: projectId } = useParams();
-
   if (!projectId) return;
-  const { stream } = useWebSocket(projectId);
 
+  const { stream, sandboxUrl, setSandboxUrl } = useWebSocket(projectId);
   const [isPreview, setIsPreview] = useState(false);
+  useEffect(() => {
+    if(!sandboxUrl) return;
+    setIsPreview(true);
+    setInterval(async() => {
+        await axios.get(sandboxUrl);
+    }, 1000 * 60 * 4.5)
+  },[sandboxUrl])
 
   return (
     <div className="grid grid-cols-[450px_1fr] w-full h-screen">
@@ -34,7 +41,7 @@ const Project = () => {
           !isPreview ?
             <FileStructure projectId={projectId} />
             :
-            <PreviewWebsite />
+            <PreviewWebsite projectId={projectId} sandboxUrl={sandboxUrl} setSandboxUrl={setSandboxUrl} />
         }
       </div>
     </div>
