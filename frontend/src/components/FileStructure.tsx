@@ -12,7 +12,7 @@ type FileStructureProp = {
 const FileStructure = ({ projectId }: FileStructureProp) => {
     const [fileStructure, setFileStructure] = useState([]);
     const [filePath, setFilePath] = useState("");
-    const [code, setCode] = useState(``);
+    const [code, setCode] = useState("");
 
     const filepathNav = filePath.split("/").splice(1);
 
@@ -25,15 +25,14 @@ const FileStructure = ({ projectId }: FileStructureProp) => {
     }, [])
 
     const HandleCodeFile = async (path: string) => {
+        setCode("");
         const response = await Post(`/api/v0/project/file`, {
             filePath: path
         });
         console.log(response);
 
         if (response.data.success) {
-            console.log(typeof response.data.data);
-
-            setCode(`${typeof response.data.data}`);
+            setCode(response.data.data);
         }
     }
 
