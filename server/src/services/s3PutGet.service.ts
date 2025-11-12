@@ -1,7 +1,6 @@
 import fs from "fs";
 import path from "path";
-import { S3Client, PutObjectCommand, GetObjectCommand, ListObjectsV2Command } from "@aws-sdk/client-s3";
-import defaultFileStructure from "../utils/defaultFileStructure";
+import { S3Client, PutObjectCommand, GetObjectCommand, ListObjectsV2Command, _Object } from "@aws-sdk/client-s3";
 
 const s3Client = new S3Client({
   region: process.env.AWS_REGION!,
@@ -85,9 +84,7 @@ const s3GetObject = async (filePath: string) => {
   if (!response.Body) {
     throw new Error("No response body received from S3");
   }
-
   const content = await response.Body.transformToString()
-  console.log(content, 's2get object');
   return content;
 }
 
@@ -103,15 +100,10 @@ const s3GetFileStructure = async (projectId: string) => {
     if (!response || !response.Contents) {
       throw new Error("Error featching file structure")
     }
-
-    if (response.Contents?.length < 13) {
-      return defaultFileStructure;
-    }
-
     return response.Contents
 
   } catch (err) {
-    return err;
+    err;
   }
 
 }

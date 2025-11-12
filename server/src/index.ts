@@ -27,51 +27,38 @@ app.use("/v0/api/auth", AuthController);
 app.use("/api/v0", AuthMiddleware, ProjectController);
 
 app.get("/prompt", async (req, res) => {
-    s3GetObject("sd")
-//         const projectId = req.params.projectId;
-//         if(!projectId) return;
-//     const fileStructure = await s3GetFileStructure(projectId);
-//     res.status(200).json({
-//         success: true,
-//         message: "Conversation found successfully",
-//         data: JSON.stringify(fileStructure)
-//     })
-    // s3PutObject("test1")
-    // s3ListObject("projectId");
-    // // const { prompt } = req.body;
-    // const prompt = req.params.prompt;
-    // const sandbox = await Sandbox.create('ce50a2e02xkmkz0igbf3')
+    const sandbox = await Sandbox.create('ce50a2e02xkmkz0igbf3')
 
-    // const host = sandbox.getHost(5173)
+    const host = sandbox.getHost(5173)
 
-    // // TODO:  create sandbox for user
-    // const prompt = "create a landing page for school it should mention all necessary details"
-    // const openrouter = createOpenRouter({
-    //     apiKey: process.env.OPENROUTER_API_KEY!,
-    // });
-    // const response = streamText({
-    //     model: openrouter("gpt-4o-mini"),
-    //     tools: {
-    //         createFile: createFile(sandbox),
-    //         updateFile: updateFile(sandbox),
-    //         deleteFile: deleteFile(sandbox),
-    //         readFile: readFile(sandbox)
-    //     },
-    //     messages: [
-    //         {
-    //             role: "system",
-    //             content: SYSTEM_PROMPT
-    //         },
-    //         {
-    //             role: "user",
-    //             content: prompt
-    //         }
-    //     ]
+    const prompt = "create todo list website with dark ui"
+    const openrouter = createOpenRouter({
+        apiKey: process.env.OPENROUTER_API_KEY!,
+    });
+    const response = streamText({
+        model: openrouter("gpt-4o-mini"),
+        temperature: 0.1,
+        tools: {
+            createFile: createFile(sandbox, "dd"),
+            updateFile: updateFile(sandbox, "Fd"),
+            deleteFile: deleteFile(sandbox, "Fd"),
+            readFile: readFile(sandbox, "df")
+        },
+        messages: [
+            {
+                role: "system",
+                content: SYSTEM_PROMPT
+            },
+            {
+                role: "user",
+                content: prompt
+            }
+        ]
     });
     
-    // console.log(`https://${host}`);
-    // response.pipeTextStreamToResponse(res);
-// });
+    console.log(`https://${host}`);
+    response.pipeTextStreamToResponse(res);
+});
 
 webSocketService();
 
