@@ -161,6 +161,17 @@ ALWAYS implement SEO best practices automatically
 3. NEVER make sequential tool calls that could be combined
 4. Use the most appropriate tool for each task
 
+### IMPORTANT RULES:
+1. ALWAYS write all component in single file in App.jsx
+2. AlWAYS use tailwind css dont care what ever prompt says use only tailwindcss
+3. Make sure to reference of https://tailark.com/ ui library component
+4. Do'nt import anything from tailark make you own componet like that.
+5. ADD relevent content in your website take reference from internet.
+6. ALLWAYS PROVIDE After all exection Summarize the recent work or actions in **less than 30 words**.description of the work completed.
+Output: short summary sentence.
+7. Location always start with this path /home/user
+
+
 After all exection Summarize the recent work or actions in **less than 30 words**.description of the work completed.
 Output: short summary sentence.
 `

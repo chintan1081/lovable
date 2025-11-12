@@ -8,13 +8,10 @@ import { findPreviousChatMsgService } from './findPreviousChatMsg.service';
 import { conversationService } from './conversation.service';
 import { ConversationMessageFrom, ConversationType } from '../entities/conversation.entity';
 import { wsSendToClient } from './webSocket.service';
+import sandboxService from './sandbox.service';
 
 export const llmCallService = async (project: Project, prompt: string) => {
-    const sandbox = await Sandbox.create('ce50a2e02xkmkz0igbf3')
-    
-    const host = sandbox.getHost(5173)
-
-    // const prompt = "create a landing page for school it should mention all necessary details"
+    const { host, sandbox } = await sandboxService(project.id);
     const openrouter = createOpenRouter({
         apiKey: process.env.OPENROUTER_API_KEY!,
     });
@@ -66,9 +63,7 @@ export const llmCallService = async (project: Project, prompt: string) => {
     wsSendToClient({
         projectId: project.id,
         type: "sandboxUrl",
-        data: {
-            url: `https://${host}`
-        }
+        data: `https://${host}`
     });
 
     return response;
