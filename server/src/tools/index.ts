@@ -6,7 +6,9 @@ import { conversationService } from "../services/conversation.service";
 import { Project } from "../entities/project.entity";
 import { ConversationMessageFrom, ConversationToolCall, ConversationType } from "../entities/conversation.entity";
 
-export const createFile = (sandbox: Sandbox, project: Project) => tool({
+// export const createFile = (sandbox: Sandbox, project: Project) => tool({
+
+export const createFile = (sandbox: Sandbox, project: any) => tool({
   description: 'Create a file at a certain directory',
   inputSchema: z.object({
     location: z.string().describe('Relative path to the file'),
@@ -14,8 +16,6 @@ export const createFile = (sandbox: Sandbox, project: Project) => tool({
   }),
   execute: async ({ location, content }: { location: string, content: string }) => {
     await sandbox.files.write(location, content);
-    console.log(location, '...........createfile');
-
     const toolMetadata = {
       location,
       returnContent: "File created"
@@ -31,20 +31,21 @@ export const createFile = (sandbox: Sandbox, project: Project) => tool({
       true
     );
 
-    await uploadSingleFile(`${project.id}/${location}`, content)
+    const newPath = location.split("/").splice(3).join("/");
+    
+    await uploadSingleFile(`${project.id}/${newPath}`, content);
 
     return `File created`;
   },
 });
 
-export const updateFile = (sandbox: Sandbox, project: Project) => tool({
+export const updateFile = (sandbox: Sandbox, project: any) => tool({
   description: 'Update a file at a certain directory',
   inputSchema: z.object({
     location: z.string().describe('Relative path to the file'),
     content: z.string().describe('Content of the file'),
   }),
   execute: async ({ location, content }: { location: string, content: string }) => {
-    console.log(location, '...........update');
 
     await sandbox.files.write(location, content);
 
@@ -63,13 +64,16 @@ export const updateFile = (sandbox: Sandbox, project: Project) => tool({
       true
     );
 
-    await uploadSingleFile(`${project.id}/${location}`, content);
+    const newPath = location.split("/").splice(3).join("/");
+    console.log(newPath, location,"./////////////////////parh");
+    
+    await uploadSingleFile(`${project.id}/${newPath}`, content);
 
     return `File updated`;
   },
 });
 
-export const deleteFile = (sandbox: Sandbox, project: Project) => tool({
+export const deleteFile = (sandbox: Sandbox, project: any) => tool({
   description: 'Delete a file at a certain directory',
   inputSchema: z.object({
     location: z.string().describe('Relative path to the file'),
@@ -79,7 +83,7 @@ export const deleteFile = (sandbox: Sandbox, project: Project) => tool({
   },
 });
 
-export const readFile = (sandbox: Sandbox, project: Project) => tool({
+export const readFile = (sandbox: Sandbox, project: any) => tool({
   description: 'Read a file at a certain directory',
   inputSchema: z.object({
     location: z.string().describe('Relative path to the file'),
