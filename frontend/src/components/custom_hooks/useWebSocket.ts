@@ -35,7 +35,7 @@ const socket = new WebSocket(`http://localhost:3001`);
             console.log(e);
 
         })
-    })
+    },[])
 
     return { stream, sandboxUrl, setSandboxUrl }
 }
