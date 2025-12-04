@@ -15,7 +15,7 @@ const wss = new WebSocketServer({ port: Number(process.env.WEBSOCKETPORT) });
 const webSocketService = () => {
     wss.on("connection", (socket: WebSocket) => {
         socketCount += 1;
-        console.log("connection", socketCount);
+        console.log("connection", socketCount, allSocket);
         socket.on("message", (message: any) => {
             const projectId = JSON.parse(message).projectId;
             allSocket.push({
@@ -38,11 +38,6 @@ const webSocketService = () => {
 
                 }
             }
-
-
-
-            console.log(allSocket, '...............socket');
-
             socketCount -= 1;
         })
 

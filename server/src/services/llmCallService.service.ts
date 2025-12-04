@@ -19,7 +19,7 @@ export const llmCallService = async (project: Project, prompt: string) => {
     const prevMessage = await findPreviousChatMsgService(project.id);
 
     const response = streamText({
-        model: openrouter("gpt-4o-mini"),
+        model: openrouter("gpt-4.1"),
         tools: {
             createFile: createFile(sandbox, project),
             updateFile: updateFile(sandbox, project),
